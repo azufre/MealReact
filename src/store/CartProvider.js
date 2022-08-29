@@ -3,13 +3,15 @@ import CartContext from "./cart-context";
 
 const defaultReduceState = {
   items: [],
-  totalAmount: 0
+  totalAmount: 0,
 };
+
 const cartReduce = (state, action) => {
   if (action.type === "ADD") {
     const existItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
     );
+
     const existItemCart = state.items[existItemIndex];
 
     let UpdateItems;
@@ -17,7 +19,7 @@ const cartReduce = (state, action) => {
     if (existItemCart) {
       const UpdateItem = {
         ...existItemCart,
-        amount: existItemCart.amount + action.item.amount
+        amount: existItemCart.amount + action.item.amount,
       };
 
       UpdateItems = [...state.items];
@@ -32,7 +34,7 @@ const cartReduce = (state, action) => {
 
     return {
       items,
-      totalAmount
+      totalAmount,
     };
   }
 
@@ -56,8 +58,12 @@ const cartReduce = (state, action) => {
 
     return {
       items: updateItems,
-      totalAmount: updateTotalAmount
+      totalAmount: updateTotalAmount,
     };
+  }
+
+  if (action.type === "CLEAR") {
+    return defaultReduceState;
   }
 
   return defaultReduceState;
@@ -72,13 +78,20 @@ const CartProvider = (props) => {
   const AddItem = (item) => {
     dispathCartAction({
       type: "ADD",
-      item: item
+      item: item,
     });
   };
+
   const RemoveItem = (id) => {
     dispathCartAction({
       type: "REMOVE",
-      id: id
+      id: id,
+    });
+  };
+
+  const ClearCart = () => {
+    dispathCartAction({
+      type: "CLEAR",
     });
   };
 
@@ -86,7 +99,8 @@ const CartProvider = (props) => {
     items: stateCart.items,
     totalAmount: stateCart.totalAmount,
     AddItem: AddItem,
-    RemoveItem: RemoveItem
+    RemoveItem: RemoveItem,
+    ClearCart: ClearCart,
   };
 
   return (
